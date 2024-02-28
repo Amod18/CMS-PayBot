@@ -1,0 +1,15 @@
+.rsc-os-option-element::after {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    /* Adjust width as needed */
+    height: 20px;
+    /* Adjust height as needed */
+    background-image: url('bulb.png');
+    /* Replace 'bulb.png' with the path to your image */
+    background-size: cover;
+    /* Adjust as needed */
+    background-repeat: no-repeat;
+    margin-left: 5px;
+    /* Adjust as needed to position the image properly */
+}
