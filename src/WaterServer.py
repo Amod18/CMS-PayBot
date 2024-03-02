@@ -419,15 +419,11 @@ def create_order():
 
 
 mysql_config = {
-    'host': 'localhost',
+    'host': '35.154.163.181',
     'database': 'test',
-    'user': 'root',
-    'password': 'Amod@0511',
-    # 'host': '35.154.163.181',
-    # 'port': '3306',
-    # 'database': 'test',
-    # 'user': 'root@localhost',
-    # 'password': 'password'
+    'user': 'amod',
+    'password': 'amod@cms',
+    'port': '3306',
 }
 
 

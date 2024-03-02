@@ -70,7 +70,7 @@ class ElectricityBill extends Component {
         console.log("Message line 43 : " + electricityConsumerIDMessage);
         console.log("Message line 44 : " + regNo);
 
-        const queryUrl = `http://localhost:5000/fetchElectricityBillDetails`;
+        const queryUrl = `http://35.154.163.181:8000/fetchElectricityBillDetails`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -184,7 +184,7 @@ class ElectricityPaymentDetails extends Component {
         const self = this;
         // const { steps } = this.props;
         // const regNo = steps.getWaterRegNo.value;
-        const queryUrl = `http://localhost:5000/fetchElectricityPayment`;
+        const queryUrl = `http://35.154.163.181:8000/fetchElectricityPayment`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -294,7 +294,7 @@ class OrderIDGeneratorElectricity extends Component {
         const self = this;
         // const { steps } = this.props;
 
-        const queryUrl = `http://localhost:5000/fetchElectricityOrderID`;
+        const queryUrl = `http://35.154.163.181:8000/fetchElectricityOrderID`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -338,7 +338,7 @@ class OrderIDGeneratorElectricity extends Component {
         console.log(localDate);
 
         const dbXHR = new XMLHttpRequest();
-        dbXHR.open('POST', 'http://localhost:5000/insertElectricityBill', true);
+        dbXHR.open('POST', 'http://35.154.163.181:5432/insertElectricityBill', true);
         dbXHR.setRequestHeader('Content-Type', 'application/json');
         dbXHR.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -429,7 +429,7 @@ class PaymentFormElectricity extends Component {
     async handlePayment() {
         const { currency } = this.state;
         try {
-            const response = await axios.post('http://localhost:5000/create_order', {
+            const response = await axios.post('http://35.154.163.181:8000/create_order', {
                 amount: billAmt * 100,
                 currency,
             });
@@ -445,7 +445,7 @@ class PaymentFormElectricity extends Component {
                 handler: async (response) => {
                     if (response) {
                         try {
-                            const transactionResponse = await axios.post('http://localhost:5000/commitTransaction', {
+                            const transactionResponse = await axios.post('http://35.154.163.181:8000/commitTransaction', {
                                 "Order_id": orderData.id,
                                 "PaymentId": response.razorpay_payment_id,
                                 "Signature": response.razorpay_signature
@@ -545,7 +545,7 @@ class RCExtract extends Component {
         const vehicleNum = steps.getRCNo.value;
         console.log(vehicleNum);
 
-        const queryUrl = `http://localhost:5000/fetchRCDetails`;
+        const queryUrl = `http://35.154.163.181:8000/fetchRCDetails`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -553,10 +553,12 @@ class RCExtract extends Component {
             if (this.readyState === 4) {
                 if (this.responseText.trim() !== "") {
                     const bindings = JSON.parse(this.responseText);
-                    console.log(bindings);
                     if (bindings.Result.ResponseVal === 1) {
                         rcExtractDetails = [
-                            "RC Amt : "
+                            "Owner Name : " + bindings.Result.ResponseData.OwnerName,
+                            "RTO Code : " + bindings.Result.ResponseData.RTOCode,
+                            "Registration Number : " + bindings.Result.ResponseData.RegistrationNo,
+                            "Chasis Number : " + bindings.Result.ResponseData.ChasisNo,
                         ]
                         billAmountDetail = rcExtractDetails.find(detail => detail.includes('Bill Amount'));
                         const billAmount = billAmountDetail ? billAmountDetail.split(': ')[1] : null;
@@ -599,7 +601,7 @@ class RCExtract extends Component {
         return (
             <div className="RC Details">
                 {loading ? <Loading /> : <div>
-                    <p>Fine details:</p>
+                    <p>RC details:</p>
                     {rcExtractDetails.map((detail, index) => (
                         <p key={index}>{detail}</p>
                     ))}
@@ -655,7 +657,7 @@ class RCDetails extends Component {
     UNSAFE_componentWillMount() {
         const self = this;
         // const { steps } = this.props;
-        const queryUrl = `http://localhost:5000/fetchRcPayment`;
+        const queryUrl = `http://35.154.163.181:8000/fetchRcPayment`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -663,12 +665,10 @@ class RCDetails extends Component {
             if (this.readyState === 4) {
                 if (this.responseText.trim() !== "") {
                     const bindings = JSON.parse(this.responseText);
-
                     if (bindings.Result.ResponseData !== null && bindings.Result.ResponseVal === 1) {
-                        // Check if ResponseData is not null before accessing its properties
                         billAmt = billAmt + bindings.Result.ResponseData.ServiceCharge + bindings.Result.ResponseData.UserCharge + bindings.Result.ResponseData.DeptUserCharge + bindings.Result.ResponseData.ChargeValue
                         orderID = [
-                            "ServiceCharge: "
+                            "Total Amount: " + billAmt
                         ];
                         self.setState({ loading: false, result: orderID });
                     } else {
@@ -704,7 +704,7 @@ class RCDetails extends Component {
         return (
             <div className="WaterBill">
                 {loading ? <Loading /> : <div>
-                    <p>Charges details:</p>
+                    <p>RC Charges details:</p>
                     {orderID.map((detail, index) => (
                         <p key={index}>{detail}</p>
                     ))}
@@ -761,7 +761,7 @@ class OrderIDGeneratorRC extends Component {
         const self = this;
         // const { steps } = this.props;
 
-        const queryUrl = `http://localhost:5000/fetchRcOderId`;
+        const queryUrl = `http://35.154.163.181:8000/fetchRcOderId`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -863,9 +863,8 @@ class PropertyTax extends Component {
         const self = this;
         const { steps } = this.props;
         const PID = steps.getPID.value;
-        console.log(PID);
 
-        const queryUrl = `http://localhost:5000/propertyTax`;
+        const queryUrl = `http://35.154.163.181:8000/propertyTax`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -979,7 +978,7 @@ class PropertyChargesDetails extends Component {
     UNSAFE_componentWillMount() {
         const self = this;
         // const { steps } = this.props;
-        const queryUrl = `http://localhost:5000/propertyTaxChages`;
+        const queryUrl = `http://35.154.163.181:8000/propertyTaxChages`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -987,12 +986,13 @@ class PropertyChargesDetails extends Component {
             if (this.readyState === 4) {
                 if (this.responseText.trim() !== "") {
                     const bindings = JSON.parse(this.responseText);
-
                     if (bindings.Result.ResponseData !== null && bindings.Result.ResponseVal === 1) {
-                        // Check if ResponseData is not null before accessing its properties
-                        billAmt = billAmt + 0
+                        billAmt = billAmt + bindings.Result.ResponseData.ServiceCharge + bindings.Result.ResponseData.UserCharge + bindings.Result.ResponseData.DeptUserCharge
                         orderID = [
-                            "ServiceCharge: "
+                            "Service Charge: " + bindings.Result.ResponseData.ServiceCharge,
+                            "User Charge: " + bindings.Result.ResponseData.UserCharge,
+                            "DeptUser Charge: " + bindings.Result.ResponseData.DeptUserCharge,
+                            "Total Amount: " + billAmt
                         ];
                         self.setState({ loading: false, result: orderID });
                     } else {
@@ -1028,7 +1028,7 @@ class PropertyChargesDetails extends Component {
         return (
             <div className="WaterBill">
                 {loading ? <Loading /> : <div>
-                    <p>Charges details:</p>
+                    <p>Department Charges :</p>
                     {orderID.map((detail, index) => (
                         <p key={index}>{detail}</p>
                     ))}
@@ -1085,7 +1085,7 @@ class OrderIDGeneratorPropertyTax extends Component {
         const self = this;
         // const { steps } = this.props;
 
-        const queryUrl = `http://localhost:5000/propertyTaxOrderId`;
+        const queryUrl = `http://35.154.163.181:8000/propertyTaxOrderId`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -1332,7 +1332,7 @@ function WaterCB() {
                     asMessage: true,
                     delay: 3000,
                     waitAction: true,
-                    trigger:'displayPropertyTax'
+                    trigger: 'displayPropertyTax'
                 },
                 {
                     id: 'displayPropertyTax',
