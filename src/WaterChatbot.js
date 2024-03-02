@@ -70,7 +70,7 @@ class ElectricityBill extends Component {
         console.log("Message line 43 : " + electricityConsumerIDMessage);
         console.log("Message line 44 : " + regNo);
 
-        const queryUrl = `http://localhost:5000/fetchElectricityBillDetails`;
+        const queryUrl = `http://35.154.163.181:8000/fetchElectricityBillDetails`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -184,7 +184,7 @@ class ElectricityPaymentDetails extends Component {
         const self = this;
         // const { steps } = this.props;
         // const regNo = steps.getWaterRegNo.value;
-        const queryUrl = `http://localhost:5000/fetchElectricityPayment`;
+        const queryUrl = `http://35.154.163.181:8000/fetchElectricityPayment`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -294,7 +294,7 @@ class OrderIDGeneratorElectricity extends Component {
         const self = this;
         // const { steps } = this.props;
 
-        const queryUrl = `http://localhost:5000/fetchElectricityOrderID`;
+        const queryUrl = `http://35.154.163.181:8000/fetchElectricityOrderID`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -338,7 +338,7 @@ class OrderIDGeneratorElectricity extends Component {
         console.log(localDate);
 
         const dbXHR = new XMLHttpRequest();
-        dbXHR.open('POST', 'http://localhost:5000/insertElectricityBill', true);
+        dbXHR.open('POST', 'http://35.154.163.181:5432/insertElectricityBill', true);
         dbXHR.setRequestHeader('Content-Type', 'application/json');
         dbXHR.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -429,7 +429,7 @@ class PaymentFormElectricity extends Component {
     async handlePayment() {
         const { currency } = this.state;
         try {
-            const response = await axios.post('http://localhost:5000/create_order', {
+            const response = await axios.post('http://35.154.163.181:8000/create_order', {
                 amount: billAmt * 100,
                 currency,
             });
@@ -445,7 +445,7 @@ class PaymentFormElectricity extends Component {
                 handler: async (response) => {
                     if (response) {
                         try {
-                            const transactionResponse = await axios.post('http://localhost:5000/commitTransaction', {
+                            const transactionResponse = await axios.post('http://35.154.163.181:8000/commitTransaction', {
                                 "Order_id": orderData.id,
                                 "PaymentId": response.razorpay_payment_id,
                                 "Signature": response.razorpay_signature
@@ -545,7 +545,7 @@ class RCExtract extends Component {
         const vehicleNum = steps.getRCNo.value;
         console.log(vehicleNum);
 
-        const queryUrl = `http://localhost:5000/fetchRCDetails`;
+        const queryUrl = `http://35.154.163.181:8000/fetchRCDetails`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -657,7 +657,7 @@ class RCDetails extends Component {
     UNSAFE_componentWillMount() {
         const self = this;
         // const { steps } = this.props;
-        const queryUrl = `http://localhost:5000/fetchRcPayment`;
+        const queryUrl = `http://35.154.163.181:8000/fetchRcPayment`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -761,7 +761,7 @@ class OrderIDGeneratorRC extends Component {
         const self = this;
         // const { steps } = this.props;
 
-        const queryUrl = `http://localhost:5000/fetchRcOderId`;
+        const queryUrl = `http://35.154.163.181:8000/fetchRcOderId`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -864,7 +864,7 @@ class PropertyTax extends Component {
         const { steps } = this.props;
         const PID = steps.getPID.value;
 
-        const queryUrl = `http://localhost:5000/propertyTax`;
+        const queryUrl = `http://35.154.163.181:8000/propertyTax`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -978,7 +978,7 @@ class PropertyChargesDetails extends Component {
     UNSAFE_componentWillMount() {
         const self = this;
         // const { steps } = this.props;
-        const queryUrl = `http://localhost:5000/propertyTaxChages`;
+        const queryUrl = `http://35.154.163.181:8000/propertyTaxChages`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
@@ -1085,7 +1085,7 @@ class OrderIDGeneratorPropertyTax extends Component {
         const self = this;
         // const { steps } = this.props;
 
-        const queryUrl = `http://localhost:5000/propertyTaxOrderId`;
+        const queryUrl = `http://35.154.163.181:8000/propertyTaxOrderId`;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', readyStateChange);
 
